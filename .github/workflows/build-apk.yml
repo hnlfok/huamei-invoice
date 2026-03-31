@@ -20,7 +20,6 @@ jobs:
             openjdk-17-jdk wget unzip curl python3-dev zlib1g-dev \
             libncurses5-dev libtinfo5 cmake libffi-dev libssl-dev \
             libgmp-dev libmpfr-dev libmpc-dev
-          echo "JAVA_HOME=$(dirname $(dirname $(update-java-alternatives -l java 2>/dev/null || which java)))" >> $GITHUB_ENV
 
       - name: Setup Java
         run: |
@@ -36,9 +35,8 @@ jobs:
           unzip -q cmdline-tools.zip && mv cmdline-tools latest
           export PATH=$HOME/android-sdk/cmdline-tools/latest/bin:$PATH
           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-          export ANDROID_SDK_ROOT=$HOME/android-sdk
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;26b" "platform-tools" 2>&1 | tail -5
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;26b" "platform-tools" 2>&1 | tail -3
 
       - name: Install Python deps
         run: |
@@ -58,6 +56,6 @@ jobs:
         with:
           name: 华美物流发货单-APK
           path: |
-            build/huamei_app/android/app/build/outputs/bundle/release/*
-            build/huamei_app/android/app/build/outputs/apk/debug/*
+            build/huamei_app/android/gradle/app/build/outputs/apk/debug/*.apk
+            build/huamei_app/android/gradle/app/build/outputs/bundle/release/*.apk
           retention-days: 30
