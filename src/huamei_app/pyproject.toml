@@ -1,0 +1,13 @@
+[build-system]
+requires = ["briefcase~=0.3"]
+build-backend = "briefcase.integrations.tempfile.tempfile_based_formatter"
+
+[project]
+bundle = "com.youyan"
+license = "MIT"
+version = "1.0.0"
+
+[tool.briefcase.app.huamei_app]
+formal_name = "华美物流发货单"
+sources = ["."]
+requires = ["openpyxl>=0.108"]

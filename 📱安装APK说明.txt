@@ -1,0 +1,30 @@
+╔══════════════════════════════════════════════════════════╗
+║         📱 华美物流发货单 - 在线编译APK                  ║
+╚══════════════════════════════════════════════════════════╝
+
+【方法一：GitHub在线编译（推荐）】
+
+  1. 在GitHub上新建一个空仓库（例如 huamei-apk）
+  2. 把本目录所有文件上传到该仓库
+  3. 点击仓库的 Actions 标签 → 选择 "Build Android APK" → 点击 Run workflow
+  4. 等待约15分钟编译完成
+  5. 在 Actions 页面下载 APK 文件
+
+  编译完成后，也可以用手机浏览器访问：
+    http://电脑IP:5000
+  直接使用Web版，功能最完整。
+
+【方法二：本地编译（需要Android SDK）】
+
+  pip install briefcase openpyxl
+  briefcase create android
+  briefcase build android
+
+【方法三：手机直接用（最快）】
+
+  在手机应用商店搜索安装 Termux（免费）
+  在Termux里运行：
+    pkg install python
+    pip install openpyxl
+    把 huamei_main.py 传到手机
+    python huamei_main.py
