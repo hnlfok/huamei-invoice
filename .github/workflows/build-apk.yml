@@ -7,32 +7,31 @@ on:
 
 jobs:
   build-apk:
-    runs-on: ubuntu-latest
-    container: python:3.11-slim
+    runs-on: ubuntu-22.04
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Install system deps
         run: |
-          apt-get update && apt-get install -y \
-            openjdk-17-jdk wget unzip curl \
-            python3-dev zlib1g-dev libncurses5-dev \
-            libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev \
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            openjdk-17-jdk wget unzip curl python3-dev zlib1g-dev \
+            libncurses5-dev libtinfo5 cmake libffi-dev libssl-dev \
             libgmp-dev mpfr-dev libmpc-dev
 
       - name: Setup Android SDK
         run: |
-          mkdir -p /opt/android-sdk/cmdline-tools
-          cd /opt/android-sdk/cmdline-tools
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
           unzip -q cmdline-tools.zip && mv cmdline-tools latest
-          export PATH=/opt/android-sdk/cmdline-tools/latest/bin:$PATH
-          yes | sdkmanager --licenses > /dev/null 2>&1
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;26b" "platform-tools" > /dev/null 2>&1
-          echo "ANDROID_SDK_ROOT=/opt/android-sdk" >> $GITHUB_ENV
-          echo "ANDROID_NDK_ROOT=/opt/android-sdk/ndk/26b" >> $GITHUB_ENV
-
-      - name: Checkout
-        uses: actions/checkout@v4
+          export PATH=$HOME/android-sdk/cmdline-tools/latest/bin:$PATH
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;26b" "platform-tools" 2>&1 | tail -5
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "ANDROID_NDK_ROOT=$HOME/android-sdk/ndk/26b" >> $GITHUB_ENV
 
       - name: Install Python deps
         run: |
@@ -40,17 +39,17 @@ jobs:
 
       - name: Build APK
         env:
-          ANDROID_SDK_ROOT: /opt/android-sdk
-          ANDROID_NDK_ROOT: /opt/android-sdk/ndk/26b
+          ANDROID_SDK_ROOT: ${{ runner.workspace }}/android-sdk
+          ANDROID_NDK_ROOT: ${{ runner.workspace }}/android-sdk/ndk/26b
         run: |
           briefcase create android --no-input
           briefcase build android --no-input
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: 华美物流发货单-APK
           path: |
-            build/huamei_app/android/app/build/outputs/bundle/release/*.apk
-            build/huamei_app/android/app/build/outputs/apk/debug/*.apk
+            build/huamei_app/android/app/build/outputs/bundle/release/*
+            build/huamei_app/android/app/build/outputs/apk/debug/*
           retention-days: 30
