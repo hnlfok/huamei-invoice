@@ -19,7 +19,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             openjdk-17-jdk wget unzip curl python3-dev zlib1g-dev \
             libncurses5-dev libtinfo5 cmake libffi-dev libssl-dev \
-            libgmp-dev mpfr-dev libmpc-dev
+            libgmp-dev libmpfr-dev libmpc-dev
 
       - name: Setup Android SDK
         run: |
@@ -29,9 +29,7 @@ jobs:
           unzip -q cmdline-tools.zip && mv cmdline-tools latest
           export PATH=$HOME/android-sdk/cmdline-tools/latest/bin:$PATH
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;26b" "platform-tools" 2>&1 | tail -5
-          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
-          echo "ANDROID_NDK_ROOT=$HOME/android-sdk/ndk/26b" >> $GITHUB_ENV
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;26b" "platform-tools" 2>&1 | tail -3
 
       - name: Install Python deps
         run: |
