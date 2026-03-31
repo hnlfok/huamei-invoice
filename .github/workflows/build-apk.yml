@@ -20,6 +20,13 @@ jobs:
             openjdk-17-jdk wget unzip curl python3-dev zlib1g-dev \
             libncurses5-dev libtinfo5 cmake libffi-dev libssl-dev \
             libgmp-dev libmpfr-dev libmpc-dev
+          echo "JAVA_HOME=$(dirname $(dirname $(update-java-alternatives -l java 2>/dev/null || which java)))" >> $GITHUB_ENV
+
+      - name: Setup Java
+        run: |
+          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+          $JAVA_HOME/bin/java -version 2>&1 | head -1
 
       - name: Setup Android SDK
         run: |
@@ -28,8 +35,10 @@ jobs:
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
           unzip -q cmdline-tools.zip && mv cmdline-tools latest
           export PATH=$HOME/android-sdk/cmdline-tools/latest/bin:$PATH
+          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;26b" "platform-tools" 2>&1 | tail -3
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;26b" "platform-tools" 2>&1 | tail -5
 
       - name: Install Python deps
         run: |
@@ -38,8 +47,9 @@ jobs:
       - name: Build APK
         env:
           ANDROID_SDK_ROOT: ${{ runner.workspace }}/android-sdk
-          ANDROID_NDK_ROOT: ${{ runner.workspace }}/android-sdk/ndk/26b
+          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
         run: |
+          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
           briefcase create android --no-input
           briefcase build android --no-input
 

@@ -4,22 +4,14 @@ build-backend = "briefcase.integrations.tempfile.tempfile_based_formatter"
 
 [project]
 bundle = "com.youyan"
-app_name = "华美发货单"
-formal_name = "华美物流发货单生成器"
+app_name = "huamei_app"
+formal_name = "华美物流发货单"
 license = "MIT"
 icon = "src/huamei_app/resources/huamei"
 description = "华美物流发货单生成工具"
-long_description = "输入今日发货数据，自动生成华美物流发货单"
 version = "1.0.0"
 
 [tool.briefcase.app.huamei_app]
 formal_name = "华美物流发货单"
 sources = ["src/huamei_app"]
 requires = ["openpyxl>=0.108"]
-launcher_script = "src/huamei_app/__main__.py"
-
-[[tool.briefcase.app.huamei_app.formats.all]]
-format = "appimage"
-
-[[tool.briefcase.app.huamei_app.formats.android]]
-format = "apk"
